@@ -2,3 +2,4 @@ com/example/backend/config/OpenApiConfig.class
 com/example/backend/controller/RestExceptionHandler.class
 com/example/backend/controller/BeneficioController.class
 com/example/backend/BackendApplication.class
+com/example/backend/BackendApplication$1.class

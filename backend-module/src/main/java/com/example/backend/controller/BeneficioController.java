@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1/beneficios")
 @Tag(name = "Benefícios", description = "Operações com benefícios")
 public class BeneficioController {
