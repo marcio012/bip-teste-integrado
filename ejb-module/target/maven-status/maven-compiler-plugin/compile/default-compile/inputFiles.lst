@@ -1,4 +1,4 @@
-/home/marcio/job/teste_bip/bip-teste-integrado/ejb-module/src/main/java/com/example/ejb/BeneficioEjbService.java
-/home/marcio/job/teste_bip/bip-teste-integrado/ejb-module/src/main/java/com/example/ejb/entity/Beneficio.java
 /home/marcio/job/teste_bip/bip-teste-integrado/ejb-module/src/main/java/com/example/ejb/exceptions/OperacaoInvalidaException.java
+/home/marcio/job/teste_bip/bip-teste-integrado/ejb-module/src/main/java/com/example/ejb/entity/Beneficio.java
 /home/marcio/job/teste_bip/bip-teste-integrado/ejb-module/src/main/java/com/example/ejb/exceptions/SaldoInsuficienteException.java
+/home/marcio/job/teste_bip/bip-teste-integrado/ejb-module/src/main/java/com/example/ejb/BeneficioEjbService.java

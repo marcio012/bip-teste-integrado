@@ -1,16 +1,16 @@
 package com.example.backend.controller;
 
+import com.example.ejb.BeneficioEjbService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -18,33 +18,20 @@ import java.util.*;
 @Tag(name = "Benefícios", description = "Operações com benefícios")
 public class BeneficioController {
 
-    private final com.example.ejb.BeneficioEjbService injected;
 
-    public BeneficioController() {
-        this.injected = null;
+    private final BeneficioEjbService ejbService;
+
+    @Autowired
+    public BeneficioController(BeneficioEjbService ejbService) {
+        this.ejbService = ejbService;
     }
 
-    BeneficioController(com.example.ejb.BeneficioEjbService service) {
-        this.injected = service;
-    }
-
-    private com.example.ejb.BeneficioEjbService ejb() {
-        if (injected != null) {
-            return injected;
-        }
-        try {
-            InitialContext ctx = new InitialContext();
-            return (com.example.ejb.BeneficioEjbService) ctx.lookup("java:global/ejb-module/BeneficioEjbService");
-        } catch (NamingException e) {
-            throw new IllegalStateException("Falha ao localizar EJB BeneficioEjbService via JNDI", e);
-        }
-    }
 
     @Operation(summary = "Buscar benefício por ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@Parameter(description = "ID do benefício") @PathVariable Long id) {
-        var b = ejb().findById(id);
-        return ResponseEntity.ok(b);
+        var beneficio = ejbService.findById(id);
+        return ResponseEntity.ok(beneficio);
     }
 
     @Operation(summary = "Creditar valor em um benefício")
@@ -52,7 +39,7 @@ public class BeneficioController {
     public ResponseEntity<?> creditar(
             @Parameter(description = "ID do benefício") @PathVariable Long id,
             @Parameter(description = "Valor a creditar") @RequestParam BigDecimal valor) {
-        ejb().creditar(id, valor);
+        ejbService.creditar(id, valor);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -61,7 +48,7 @@ public class BeneficioController {
     public ResponseEntity<?> debitar(
             @Parameter(description = "ID do benefício") @PathVariable Long id,
             @Parameter(description = "Valor a debitar") @RequestParam BigDecimal valor) {
-        ejb().debitar(id, valor);
+        ejbService.debitar(id, valor);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -71,40 +58,34 @@ public class BeneficioController {
             @Parameter(description = "ID de origem") @RequestParam Long origemId,
             @Parameter(description = "ID de destino") @RequestParam Long destinoId,
             @Parameter(description = "Valor a transferir") @RequestParam BigDecimal valor) {
-        ejb().transferir(origemId, destinoId, valor);
+        ejbService.transferir(origemId, destinoId, valor);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Operation(summary = "Listar todos os benefícios")
     @GetMapping
     public List<com.example.ejb.entity.Beneficio> list() {
-        return ejb().listAll();
+        return ejbService.listAll();
     }
 
     @Operation(summary = "Criar benefício")
     @PostMapping
     public ResponseEntity<com.example.ejb.entity.Beneficio> criarBeneficio(@RequestBody com.example.ejb.entity.Beneficio body) {
-        if (body.getNome() == null || body.getNome().isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-        if (body.getValor() == null) {
-            body.setValor(new BigDecimal("0.00"));
-        }
-        var created = ejb().create(body);
+        var created = ejbService.create(body);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Operation(summary = "Atualizar benefício")
     @PutMapping("/{id}")
     public ResponseEntity<com.example.ejb.entity.Beneficio> atualizarBeneficio(@PathVariable Long id, @RequestBody com.example.ejb.entity.Beneficio body) {
-        var updated = ejb().update(id, body);
+        var updated = ejbService.update(id, body);
         return ResponseEntity.ok(updated);
     }
 
     @Operation(summary = "Excluir benefício")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluirBeneficio(@PathVariable Long id) {
-        ejb().delete(id);
+        ejbService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
