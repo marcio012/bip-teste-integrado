@@ -8,12 +8,15 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Stateless
+@Service
+@Transactional
 public final class BeneficioEjbService {
 
     @PersistenceContext

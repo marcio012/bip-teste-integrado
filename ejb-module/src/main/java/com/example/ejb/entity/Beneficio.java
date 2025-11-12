@@ -1,6 +1,7 @@
 package com.example.ejb.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -15,6 +16,7 @@ public class Beneficio {
     private Long id;
 
     @Column(name = "NOME", nullable = false, length = 100)
+    @NotBlank(message = "Nome é obrigatório")
     private String nome;
 
     @Column(name = "DESCRICAO", length = 255)
