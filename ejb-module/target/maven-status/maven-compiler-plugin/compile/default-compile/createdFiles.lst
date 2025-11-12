@@ -1,4 +1,0 @@
-com/example/ejb/exceptions/OperacaoInvalidaException.class
-com/example/ejb/exceptions/SaldoInsuficienteException.class
-com/example/ejb/entity/Beneficio.class
-com/example/ejb/BeneficioEjbService.class
