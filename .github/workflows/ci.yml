@@ -14,3 +14,35 @@ jobs:
           distribution: 'temurin'
       - name: Build backend
         run: mvn -B -f backend-module clean package
+
+      - name: Build EJB module (tests)
+        run: mvn -B -q -f ejb-module/pom.xml clean test
+
+      - name: Build Backend module (tests + package)
+        run: mvn -B -q -f backend-module/pom.xml clean verify
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint frontend
+        working-directory: frontend
+        run: |
+          if npm run | grep -q "lint"; then npm run lint; else echo "No lint script, skipping"; fi
+
+      - name: Test frontend
+        working-directory: frontend
+        run: |
+          if npm run | grep -q "test"; then npm test -- --watch=false --browsers=ChromeHeadless || npm test -- --watch=false; else echo "No test script, skipping"; fi
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          if npm run | grep -q "build"; then npm run build; else echo "No build script, skipping"; fi

@@ -31,6 +31,42 @@ public final class BeneficioEjbService {
         return em.createQuery("select b from Beneficio b", Beneficio.class).getResultList();
     }
 
+    public Beneficio create(Beneficio novo) {
+        if (novo == null) throw new OperacaoInvalidaException("Payload inválido");
+        if (novo.getNome() == null || novo.getNome().isBlank()) {
+            throw new OperacaoInvalidaException("Nome é obrigatório");
+        }
+        if (novo.getValor() == null) {
+            novo.setValor(new BigDecimal("0.00"));
+        }
+        em.persist(novo);
+        em.flush();
+        return novo;
+    }
+
+    public Beneficio update(Long id, Beneficio changes) {
+        if (id == null || changes == null) throw new OperacaoInvalidaException("Parâmetros inválidos");
+        Beneficio atual = em.find(Beneficio.class, id, LockModeType.PESSIMISTIC_WRITE);
+        if (atual == null) {
+            throw new OperacaoInvalidaException("Benefício não encontrado: " + id);
+        }
+        if (changes.getNome() != null) atual.setNome(changes.getNome());
+        if (changes.getDescricao() != null) atual.setDescricao(changes.getDescricao());
+        if (changes.getValor() != null) atual.setValor(changes.getValor());
+        if (changes.getAtivo() != null) atual.setAtivo(changes.getAtivo());
+        em.flush();
+        return atual;
+    }
+
+    public void delete(Long id) {
+        Beneficio b = em.find(Beneficio.class, id, LockModeType.PESSIMISTIC_WRITE);
+        if (b == null) {
+            throw new OperacaoInvalidaException("Benefício não encontrado: " + id);
+        }
+        em.remove(b);
+        em.flush();
+    }
+
     public void creditar(Long beneficioId, BigDecimal valor) {
         validarValorPositivo(valor);
         Beneficio b = em.find(Beneficio.class, beneficioId, LockModeType.PESSIMISTIC_WRITE);

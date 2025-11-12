@@ -1,0 +1,30 @@
+<div class="container">
+  <h2>{{ id ? 'Editar' : 'Novo' }} Benefício</h2>
+
+  <form (ngSubmit)="salvar()">
+    <div class="form-grid">
+      <label class="full">Nome
+        <input [(ngModel)]="form.nome" name="nome" required />
+      </label>
+
+      <label class="full">Descrição
+        <input [(ngModel)]="form.descricao" name="descricao" />
+      </label>
+
+      <label>Valor
+        <input type="number" step="0.01" [(ngModel)]="form.valor" name="valor" required />
+      </label>
+
+      <label>Ativo
+        <input type="checkbox" [(ngModel)]="form.ativo" name="ativo" />
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="loading">Salvar</button>
+      <button type="button" (click)="voltar()">Voltar</button>
+    </div>
+  </form>
+
+  @if (error) { <p class="error">{{ error }}</p> }
+</div>

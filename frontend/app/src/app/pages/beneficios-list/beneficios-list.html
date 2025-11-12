@@ -1,0 +1,45 @@
+<div class="container">
+  <h2>Benefícios</h2>
+
+  <div class="actions">
+    <button (click)="reload()" [disabled]="loading">Recarregar</button>
+    <a class="btn" routerLink="/beneficios/novo">Novo</a>
+    <a class="btn" routerLink="/transferencias">Transferir</a>
+  </div>
+
+  @if (loading) { <p>Carregando...</p> }
+
+  @if (error) { <p class="error">{{ error }}</p> }
+
+  @if (itens.length) {
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th><th>Nome</th><th>Valor</th><th>Ativo</th><th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        @for (b of itens; track b.id) {
+          <tr>
+            <td>{{ b.id }}</td>
+            <td>{{ b.nome }}</td>
+            <td>{{ b.valor | number:'1.2-2' }}</td>
+            <td>
+              <span [class]="b.ativo ? 'badge-ok' : 'badge-off'">
+                {{ b.ativo ? 'Ativo' : 'Inativo' }}
+              </span>
+            </td>
+            <td>
+              <a class="btn" [routerLink]="['/beneficios', b.id, 'editar']">Editar</a>
+              <button (click)="excluir(b)">Excluir</button>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p>Nenhum benefício cadastrado.</p>
+  }
+</div>

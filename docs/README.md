@@ -32,3 +32,6 @@ Criar solução completa em camadas (DB, EJB, Backend, Frontend), corrigindo bug
 - Testes (15%)
 - Documentação (10%)
 - Frontend (10%)
+
+## Como rodar
+[→ Ver o runbook de execução integrada com container EJB](./runbook.md)

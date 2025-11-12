@@ -1,4 +1,4 @@
-package com.example.config;
+package com.example.backend.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
