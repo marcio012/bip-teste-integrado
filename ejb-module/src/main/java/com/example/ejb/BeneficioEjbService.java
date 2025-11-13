@@ -17,11 +17,12 @@ import java.util.List;
 
 @Service
 @Transactional
-public final class BeneficioEjbService {
+public class BeneficioEjbService implements BeneficioEjbServiceInterface {
 
     @PersistenceContext
     private EntityManager em;
 
+    @Override
     public Beneficio findById(Long id) {
         Beneficio b = em.find(Beneficio.class, id);
         if (b == null) {
@@ -30,10 +31,12 @@ public final class BeneficioEjbService {
         return b;
     }
 
+    @Override
     public List<Beneficio> listAll() {
         return em.createQuery("select b from Beneficio b", Beneficio.class).getResultList();
     }
 
+    @Override
     public Beneficio create(Beneficio novo) {
         if (novo == null) throw new OperacaoInvalidaException("Payload inválido");
         if (novo.getNome() == null || novo.getNome().isBlank()) {
@@ -47,6 +50,7 @@ public final class BeneficioEjbService {
         return novo;
     }
 
+    @Override
     public Beneficio update(Long id, Beneficio changes) {
         if (id == null || changes == null) throw new OperacaoInvalidaException("Parâmetros inválidos");
         Beneficio atual = em.find(Beneficio.class, id, LockModeType.PESSIMISTIC_WRITE);
@@ -61,6 +65,7 @@ public final class BeneficioEjbService {
         return atual;
     }
 
+    @Override
     public void delete(Long id) {
         Beneficio b = em.find(Beneficio.class, id, LockModeType.PESSIMISTIC_WRITE);
         if (b == null) {
@@ -70,6 +75,7 @@ public final class BeneficioEjbService {
         em.flush();
     }
 
+    @Override
     public void creditar(Long beneficioId, BigDecimal valor) {
         validarValorPositivo(valor);
         Beneficio b = em.find(Beneficio.class, beneficioId, LockModeType.PESSIMISTIC_WRITE);
@@ -80,6 +86,7 @@ public final class BeneficioEjbService {
         em.flush();
     }
 
+    @Override
     public void debitar(Long beneficioId, BigDecimal valor) {
         validarValorPositivo(valor);
         Beneficio b = em.find(Beneficio.class, beneficioId, LockModeType.PESSIMISTIC_WRITE);
@@ -93,6 +100,7 @@ public final class BeneficioEjbService {
         em.flush();
     }
 
+    @Override
     public void transferir(Long origemId, Long destinoId, BigDecimal valor) {
         validarValorPositivo(valor);
         if (origemId.equals(destinoId)) {
@@ -107,7 +115,6 @@ public final class BeneficioEjbService {
             em.find(Beneficio.class, origemId, LockModeType.PESSIMISTIC_WRITE);
         }
 
-        // Lock pessimista mantendo os mesmos nomes das variáveis
         Beneficio origem = em.find(Beneficio.class, origemId, LockModeType.PESSIMISTIC_WRITE);
         Beneficio destino = em.find(Beneficio.class, destinoId, LockModeType.PESSIMISTIC_WRITE);
 
@@ -131,6 +138,13 @@ public final class BeneficioEjbService {
         }
     }
 
+    /**
+     * Valida se o valor fornecido é positivo. Caso o valor seja nulo ou menor/igual a zero,
+     * uma exceção do tipo {@code OperacaoInvalidaException} será lançada.
+     *
+     * @param valor valor a ser validado como positivo
+     * @throws OperacaoInvalidaException se o valor for nulo ou menor/igual a zero
+     */
     private void validarValorPositivo(BigDecimal valor) {
         if (valor == null || valor.signum() <= 0) {
             throw new OperacaoInvalidaException("Valor deve ser positivo");

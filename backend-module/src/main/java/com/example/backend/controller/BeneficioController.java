@@ -1,9 +1,11 @@
 package com.example.backend.controller;
 
 import com.example.ejb.BeneficioEjbService;
+import com.example.ejb.BeneficioEjbServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +20,12 @@ import java.util.List;
 @Tag(name = "Benefícios", description = "Operações com benefícios")
 public class BeneficioController {
 
-
-    private final BeneficioEjbService ejbService;
+    private final BeneficioEjbServiceInterface ejbService;
 
     @Autowired
-    public BeneficioController(BeneficioEjbService ejbService) {
+    public BeneficioController(BeneficioEjbServiceInterface ejbService) {
         this.ejbService = ejbService;
     }
-
 
     @Operation(summary = "Buscar benefício por ID")
     @GetMapping("/{id}")
@@ -70,14 +70,14 @@ public class BeneficioController {
 
     @Operation(summary = "Criar benefício")
     @PostMapping
-    public ResponseEntity<com.example.ejb.entity.Beneficio> criarBeneficio(@RequestBody com.example.ejb.entity.Beneficio body) {
+    public ResponseEntity<com.example.ejb.entity.Beneficio> criarBeneficio(@Valid @RequestBody com.example.ejb.entity.Beneficio body) {
         var created = ejbService.create(body);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Operation(summary = "Atualizar benefício")
     @PutMapping("/{id}")
-    public ResponseEntity<com.example.ejb.entity.Beneficio> atualizarBeneficio(@PathVariable Long id, @RequestBody com.example.ejb.entity.Beneficio body) {
+    public ResponseEntity<com.example.ejb.entity.Beneficio> atualizarBeneficio(@PathVariable Long id, @Valid @RequestBody com.example.ejb.entity.Beneficio body) {
         var updated = ejbService.update(id, body);
         return ResponseEntity.ok(updated);
     }

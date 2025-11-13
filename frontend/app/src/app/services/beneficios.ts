@@ -8,13 +8,14 @@ export interface Beneficio {
   descricao?: string;
   valor: number;
   ativo: boolean;
+  version?: number;
 }
 
 @Injectable({providedIn: 'root'})
 export class BeneficiosService {
   private base = environment.apiBase;
 
-  list() {
+    list() {
     return axios.get<Beneficio[]>(`${this.base}`);
   }
 

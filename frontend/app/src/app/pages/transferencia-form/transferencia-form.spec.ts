@@ -1,23 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TransferenciaForm } from './transferencia-form';
+import { TransferenciaFormComponent } from './transferencia-form';
 
 describe('TransferenciaForm', () => {
-  let component: TransferenciaForm;
-  let fixture: ComponentFixture<TransferenciaForm>;
+  let component: TransferenciaFormComponent;
+  let fixture: ComponentFixture<TransferenciaFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TransferenciaForm]
+      imports: [TransferenciaFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TransferenciaForm);
+    fixture = TestBed.createComponent(TransferenciaFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('deve criar o componente', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('deve inicializar o formulário de transferência', () => {
+    expect(component).toBeDefined();
   });
 });

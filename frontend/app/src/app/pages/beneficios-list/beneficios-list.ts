@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {DecimalPipe} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import axios from 'axios';
@@ -19,23 +19,45 @@ export class BeneficiosListComponent implements OnInit {
 
   private base = `${environment.apiBase}`;
 
+  constructor(private ngZone: NgZone) {}
+
   ngOnInit() { this.reload(); }
 
   reload() {
     this.loading = true;
     this.error = '';
     axios.get<Beneficio[]>(this.base)
-      .then(r => this.itens = r.data)
-      .catch(e => this.error = e?.response?.data || 'Erro ao carregar')
-      .finally(() => this.loading = false);
+      .then(r => {
+        this.ngZone.run(() => {
+          this.itens = r.data;
+        });
+      })
+      .catch(e => {
+        this.ngZone.run(() => {
+          this.error = e?.response?.data || 'Erro ao carregar';
+        });
+      })
+      .finally(() => {
+        this.ngZone.run(() => {
+          this.loading = false;
+        });
+      });
   }
 
   excluir(b: Beneficio) {
     if (!b.id) return;
     if (confirm(`Excluir ${b.nome}?`)) {
       axios.delete(`${this.base}/${b.id}`)
-        .then(() => this.reload())
-        .catch(e => this.error = e?.response?.data || 'Erro ao excluir');
+        .then(() => {
+          this.ngZone.run(() => {
+            this.reload();
+          });
+        })
+        .catch(e => {
+          this.ngZone.run(() => {
+            this.error = e?.response?.data || 'Erro ao excluir';
+          });
+        });
     }
   }
 }

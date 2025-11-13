@@ -7,11 +7,13 @@
     <a class="btn" routerLink="/transferencias">Transferir</a>
   </div>
 
-  @if (loading) { <p>Carregando...</p> }
-
-  @if (error) { <p class="error">{{ error }}</p> }
-
-  @if (itens.length) {
+  @if (loading) {
+    <p>Carregando...</p>
+  } @else if (error) {
+    <p class="error">{{ error }}</p>
+  } @else if (itens.length === 0) {
+    <p>Nenhum benefício cadastrado.</p>
+  } @else {
     <div class="table-wrap">
       <table>
         <thead>
@@ -39,7 +41,5 @@
         </tbody>
       </table>
     </div>
-  } @else {
-    <p>Nenhum benefício cadastrado.</p>
   }
 </div>
