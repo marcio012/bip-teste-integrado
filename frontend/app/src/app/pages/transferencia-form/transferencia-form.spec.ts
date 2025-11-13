@@ -1,26 +1,56 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TransferenciaFormComponent } from './transferencia-form';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute, provideRouter} from '@angular/router';
+import {BeneficioFormComponent} from '../beneficio-form/beneficio-form';
 
-describe('TransferenciaForm', () => {
-  let component: TransferenciaFormComponent;
-  let fixture: ComponentFixture<TransferenciaFormComponent>;
+describe('BeneficioFormComponent', () => {
+  let component: BeneficioFormComponent;
+  let fixture: ComponentFixture<BeneficioFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TransferenciaFormComponent]
+      imports: [BeneficioFormComponent],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: {
+                get: () => null
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TransferenciaFormComponent);
+    fixture = TestBed.createComponent(BeneficioFormComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    if (fixture) {
+      fixture.destroy();
+    }
   });
 
   it('deve criar o componente', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve inicializar o formulário de transferência', () => {
-    expect(component).toBeDefined();
+  it('deve inicializar o formulário', () => {
+    expect(component.form).toBeDefined();
+    expect(component.form.nome).toBe('');
+    expect(component.form.valor).toBe(0);
+    expect(component.form.ativo).toBe(true);
+  });
+
+  it('deve inicializar loading como false', () => {
+    expect(component.loading).toBe(false);
+  });
+
+  it('deve inicializar error como string vazia', () => {
+    expect(component.error).toBe('');
   });
 });

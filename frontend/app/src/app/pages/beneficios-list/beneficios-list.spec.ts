@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgZone } from '@angular/core';
 import { BeneficiosListComponent } from './beneficios-list';
 import { Beneficio } from '../../services/beneficios';
+import { provideRouter } from '@angular/router';
 
 describe('BeneficiosListComponent', () => {
   let component: BeneficiosListComponent;
@@ -29,14 +30,15 @@ describe('BeneficiosListComponent', () => {
   ];
 
   beforeEach(async () => {
-    // Mock do NgZone
-    mockNgZone = jasmine.createSpyObj('NgZone', ['run', 'runOutsideAngular']);
+    mockNgZone = jasmine.createSpyObj('NgZone', ['run', 'runOutsideAngular', 'runTask', 'runGuarded']);
     mockNgZone.run.and.callFake((fn: Function) => fn());
+    mockNgZone.runOutsideAngular.and.callFake((fn: Function) => fn());
 
     await TestBed.configureTestingModule({
       imports: [BeneficiosListComponent],
       providers: [
-        { provide: NgZone, useValue: mockNgZone }
+        { provide: NgZone, useValue: mockNgZone },
+        provideRouter([])
       ]
     }).compileComponents();
 
@@ -45,7 +47,9 @@ describe('BeneficiosListComponent', () => {
   });
 
   afterEach(() => {
-    fixture.destroy();
+    if (fixture) {
+      fixture.destroy();
+    }
   });
 
   it('deve criar o componente', () => {
@@ -60,7 +64,7 @@ describe('BeneficiosListComponent', () => {
 
   describe('ngOnInit', () => {
     it('deve chamar reload ao inicializar', () => {
-      spyOn(component, 'reload');
+      spyOn(component, 'reload').and.stub();
       component.ngOnInit();
       expect(component.reload).toHaveBeenCalled();
     });
@@ -78,11 +82,11 @@ describe('BeneficiosListComponent', () => {
       expect(component.error).toBe('');
     });
 
-    it('deve chamar ngZone.run ao processar resposta', () => {
+    it('deve chamar ngZone.run ao processar resposta', (done) => {
       component.reload();
-      // Aguarda um pouco para o axios processar
       setTimeout(() => {
         expect(mockNgZone.run).toHaveBeenCalled();
+        done();
       }, 100);
     });
   });
@@ -178,7 +182,6 @@ describe('BeneficiosListComponent', () => {
       fixture.detectChanges();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      // Verifica se os valores estão sendo exibidos
       expect(compiled.textContent).toContain('1,000');
       expect(compiled.textContent).toContain('500');
     });
